@@ -16,11 +16,13 @@ import { ReelColumn } from './reel-column';
 import { ControlPanel } from './control-panel';
 import { WinAnimation } from './win-animation';
 import { WinningLinesDisplay } from './winning-lines-display';
-import type { WinningFeedbackEnhancementOutput } from '@/ai/flows/winning-feedback-enhancement';
 import { useToast } from '@/hooks/use-toast';
 import useSound from 'use-sound';
 import { SOUNDS } from '@/lib/sounds';
 import { cn } from '@/lib/utils';
+import { useBackgroundMusic } from '@/hooks/useBackgroundMusic';
+import { Button } from '@/components/ui/button';
+import { Volume2, VolumeX } from 'lucide-react';
 
 const generateInitialGrid = (): SymbolId[][] =>
   Array(NUM_REELS)
@@ -43,22 +45,104 @@ export function SlotMachine() {
 
   const [freeSpinsRemaining, setFreeSpinsRemaining] = useState(0);
   const [isAutoSpinning, setIsAutoSpinning] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const isFreeSpinsMode = useMemo(() => freeSpinsRemaining > 0 || isAutoSpinning, [freeSpinsRemaining, isAutoSpinning]);
 
-  const [playBgMusic, { stop: stopBgMusic }] = useSound(SOUNDS.background, { loop: true, volume: 0.3 });
-  const [playSpinSound, { stop: stopSpinSound }] = useSound(SOUNDS.spin, { interrupt: true });
-  const [playReelStopSound] = useSound(SOUNDS.reelStop);
-  const [playWinSound] = useSound(SOUNDS.win);
-  const [playBigWinSound] = useSound(SOUNDS.bigWin);
-  const [playFreeSpinsTriggerSound] = useSound(SOUNDS.featureTrigger);
+  const soundConfig = { 
+    soundEnabled: !isMuted,
+    volume: 0.3,
+    loop: true
+  };
 
+  // Debug log sound file paths
+  useEffect(() => {
+    console.log('Sound file paths:', {
+      background: new URL(SOUNDS.background, window.location.origin).href,
+      spin: new URL(SOUNDS.spin, window.location.origin).href,
+      reelStop: new URL(SOUNDS.reelStop, window.location.origin).href,
+      win: new URL(SOUNDS.win, window.location.origin).href,
+      bigWin: new URL(SOUNDS.bigWin, window.location.origin).href,
+      featureTrigger: new URL(SOUNDS.featureTrigger, window.location.origin).href,
+    });
+  }, []);
+
+  const [playBgMusic, { stop: stopBgMusic }] = useSound(SOUNDS.background, {
+    ...soundConfig,
+    onload: () => console.log('Background music loaded'),
+    onplay: () => console.log('Background music playing'),
+    onerror: (e) => console.error('Background music error:', e)
+  });
+  
+  const [playSpinSound, { stop: stopSpinSound }] = useSound(SOUNDS.spin, { 
+    ...soundConfig, 
+    interrupt: false,  // Don't interrupt if already playing
+    loop: false,       // Play only once
+    onload: () => console.log('Spin sound loaded'),
+    onplay: () => console.log('Spin sound playing'),
+    onend: () => console.log('Spin sound finished'),
+    onerror: (e) => console.error('Spin sound error:', e)
+  });
+  
+  const [playReelStopSound] = useSound(SOUNDS.reelStop, {
+    ...soundConfig,
+    loop: false,  // Ensure it doesn't loop
+    onload: () => console.log('Reel stop sound loaded'),
+    onplay: () => console.log('Reel stop sound playing'),
+    onend: () => console.log('Reel stop sound finished'),
+    onerror: (e) => console.error('Reel stop sound error:', e)
+  });
+  
+  const [playWinSound] = useSound(SOUNDS.win, {
+    ...soundConfig,
+    onload: () => console.log('Win sound loaded'),
+    onplay: () => console.log('Win sound playing'),
+    onerror: (e) => console.error('Win sound error:', e)
+  });
+  
+  const [playBigWinSound] = useSound(SOUNDS.bigWin, {
+    ...soundConfig,
+    onload: () => console.log('Big win sound loaded'),
+    onplay: () => console.log('Big win sound playing'),
+    onerror: (e) => console.error('Big win sound error:', e)
+  });
+  
+  const [playFreeSpinsTriggerSound] = useSound(SOUNDS.featureTrigger, {
+    ...soundConfig,
+    onload: () => console.log('Feature trigger sound loaded'),
+    onplay: () => console.log('Feature trigger sound playing'),
+    onerror: (e) => console.error('Feature trigger sound error:', e)
+  });
 
   useEffect(() => {
-    // playBgMusic();
+    if (!isMuted) {
+      const playPromise = playBgMusic();
+      
+      // Handle autoplay policies
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Autoplay was prevented. Please interact with the page first.');
+        });
+      }
+    }
+    
     return () => {
       stopBgMusic();
     };
-  }, [playBgMusic, stopBgMusic]);
+  }, [playBgMusic, stopBgMusic, isMuted]);
+
+  const toggleMute = () => {
+    if (isMuted) {
+      const playPromise = playBgMusic();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Play was prevented.');
+        });
+      }
+    } else {
+      stopBgMusic();
+    }
+    setIsMuted(!isMuted);
+  };
 
   const isSpinning = useMemo(() => spinningReels.some(s => s), [spinningReels]);
 
@@ -198,7 +282,22 @@ export function SlotMachine() {
   }
   
   return (
-    <div className="flex flex-col items-center gap-2 md:gap-4 p-2 md:p-4 rounded-2xl bg-card/50 border-2 md:border-4 border-primary/50 shadow-2xl w-full max-w-6xl">
+    <div className="flex flex-col items-center gap-2 md:gap-4 p-2 md:p-4 rounded-2xl bg-card/50 border-2 md:border-4 border-primary/50 shadow-2xl w-full max-w-6xl relative">
+      <div className="absolute top-2 right-2 z-10">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleMute}
+          className="rounded-full w-10 h-10 p-2 bg-black/50 hover:bg-black/70 transition-colors"
+          aria-label={isMuted ? "Unmute" : "Mute"}
+        >
+          {isMuted ? (
+            <VolumeX className="w-6 h-6 text-white" />
+          ) : (
+            <Volume2 className="w-6 h-6 text-white" />
+          )}
+        </Button>
+      </div>
       <h1 className="text-3xl sm:text-4xl md:text-6xl font-headline text-accent tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
         Reel Runner
       </h1>
