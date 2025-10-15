@@ -12,6 +12,7 @@ import {
   FREE_SPINS_AWARDED
 } from '@/lib/slot-config';
 import { getWinningFeedback } from '@/app/actions';
+import type { WinningFeedbackEnhancementOutput } from '@/app/actions';
 import { ReelColumn } from './reel-column';
 import { ControlPanel } from './control-panel';
 import { WinAnimation } from './win-animation';
