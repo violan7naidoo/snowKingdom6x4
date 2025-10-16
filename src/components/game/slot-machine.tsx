@@ -45,103 +45,37 @@ export function SlotMachine() {
   const { toast } = useToast();
 
   const [freeSpinsRemaining, setFreeSpinsRemaining] = useState(0);
-  const [isAutoSpinning, setIsAutoSpinning] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const isFreeSpinsMode = useMemo(() => freeSpinsRemaining > 0 || isAutoSpinning, [freeSpinsRemaining, isAutoSpinning]);
+  const isFreeSpinsMode = useMemo(() => freeSpinsRemaining > 0, [freeSpinsRemaining]);
 
-  const soundConfig = { 
+  const soundConfig = {
     soundEnabled: !isMuted,
     volume: 0.3,
-    loop: true
   };
-
-  // Debug log sound file paths
-  useEffect(() => {
-    console.log('Sound file paths:', {
-      background: new URL(SOUNDS.background, window.location.origin).href,
-      spin: new URL(SOUNDS.spin, window.location.origin).href,
-      reelStop: new URL(SOUNDS.reelStop, window.location.origin).href,
-      win: new URL(SOUNDS.win, window.location.origin).href,
-      bigWin: new URL(SOUNDS.bigWin, window.location.origin).href,
-      featureTrigger: new URL(SOUNDS.featureTrigger, window.location.origin).href,
-    });
-  }, []);
 
   const [playBgMusic, { stop: stopBgMusic }] = useSound(SOUNDS.background, {
     ...soundConfig,
-    onload: () => console.log('Background music loaded'),
-    onplay: () => console.log('Background music playing'),
-    onerror: (e) => console.error('Background music error:', e)
+    loop: true
   });
-  
-  const [playSpinSound, { stop: stopSpinSound }] = useSound(SOUNDS.spin, { 
-    ...soundConfig, 
-    interrupt: false,  // Don't interrupt if already playing
-    loop: false,       // Play only once
-    onload: () => console.log('Spin sound loaded'),
-    onplay: () => console.log('Spin sound playing'),
-    onend: () => console.log('Spin sound finished'),
-    onerror: (e) => console.error('Spin sound error:', e)
-  });
-  
-  const [playReelStopSound] = useSound(SOUNDS.reelStop, {
+  const [playSpinSound, { stop: stopSpinSound }] = useSound(SOUNDS.spin, {
     ...soundConfig,
-    loop: false,  // Ensure it doesn't loop
-    onload: () => console.log('Reel stop sound loaded'),
-    onplay: () => console.log('Reel stop sound playing'),
-    onend: () => console.log('Reel stop sound finished'),
-    onerror: (e) => console.error('Reel stop sound error:', e)
+    loop: false,
   });
-  
-  const [playWinSound] = useSound(SOUNDS.win, {
-    ...soundConfig,
-    onload: () => console.log('Win sound loaded'),
-    onplay: () => console.log('Win sound playing'),
-    onerror: (e) => console.error('Win sound error:', e)
-  });
-  
-  const [playBigWinSound] = useSound(SOUNDS.bigWin, {
-    ...soundConfig,
-    onload: () => console.log('Big win sound loaded'),
-    onplay: () => console.log('Big win sound playing'),
-    onerror: (e) => console.error('Big win sound error:', e)
-  });
-  
-  const [playFreeSpinsTriggerSound] = useSound(SOUNDS.featureTrigger, {
-    ...soundConfig,
-    onload: () => console.log('Feature trigger sound loaded'),
-    onplay: () => console.log('Feature trigger sound playing'),
-    onerror: (e) => console.error('Feature trigger sound error:', e)
-  });
+  const [playReelStopSound] = useSound(SOUNDS.reelStop, { ...soundConfig, loop: false });
+  const [playWinSound] = useSound(SOUNDS.win, soundConfig);
+  const [playBigWinSound] = useSound(SOUNDS.bigWin, soundConfig);
+  const [playFreeSpinsTriggerSound] = useSound(SOUNDS.featureTrigger, soundConfig);
 
   useEffect(() => {
     if (!isMuted) {
-      const playPromise = playBgMusic();
-      
-      // Handle autoplay policies
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log('Autoplay was prevented. Please interact with the page first.');
-        });
-      }
+      playBgMusic();
     }
-    
     return () => {
       stopBgMusic();
     };
   }, [playBgMusic, stopBgMusic, isMuted]);
 
   const toggleMute = () => {
-    if (isMuted) {
-      const playPromise = playBgMusic();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log('Play was prevented.');
-        });
-      }
-    } else {
-      stopBgMusic();
-    }
     setIsMuted(!isMuted);
   };
 
@@ -155,8 +89,8 @@ export function SlotMachine() {
   };
 
   const spin = useCallback(async () => {
-    if (isSpinning || isAutoSpinning) return;
-    
+    if (isSpinning) return;
+
     if (balance < betAmount && freeSpinsRemaining === 0) {
       toast({
         variant: "destructive",
@@ -165,18 +99,16 @@ export function SlotMachine() {
       });
       return;
     }
-    
+
     stopSpinSound();
     playSpinSound();
 
-    let newFreeSpinsRemaining = freeSpinsRemaining;
     if (freeSpinsRemaining > 0) {
-        newFreeSpinsRemaining = freeSpinsRemaining - 1;
-        setFreeSpinsRemaining(newFreeSpinsRemaining);
+        setFreeSpinsRemaining(prev => prev - 1);
     } else {
         setBalance(prev => prev - betAmount);
     }
-    
+
     setLastWin(0);
     setWinningLines([]);
     setWinningFeedback(null);
@@ -186,7 +118,7 @@ export function SlotMachine() {
         const finalStopIndex = Math.floor(Math.random() * strip.length);
         return Array(NUM_ROWS).fill(null).map((_, i) => strip[(finalStopIndex + i) % strip.length]);
     });
-    
+
     for (let i = 0; i < NUM_REELS; i++) {
         await new Promise(resolve => setTimeout(resolve, 500 + i * 150));
         playReelStopSound();
@@ -195,25 +127,23 @@ export function SlotMachine() {
             newSpinning[i] = false;
             return newSpinning;
         });
-        
+
         setGrid(prevGrid => {
             const newGrid = [...prevGrid];
             newGrid[i] = newFinalGrid[i];
             return newGrid;
         });
     }
-    
+
     stopSpinSound();
-    await new Promise(resolve => setTimeout(resolve, 100)); 
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     setGrid(newFinalGrid);
-    
+
     const { totalWin, winningLines, scatterWin } = evaluateSpin(newFinalGrid, betAmount);
-    
-    let updatedFreeSpins = newFreeSpinsRemaining;
+
     if (scatterWin.triggeredFreeSpins) {
-        updatedFreeSpins += FREE_SPINS_AWARDED;
-        setFreeSpinsRemaining(updatedFreeSpins);
+        setFreeSpinsRemaining(prev => prev + FREE_SPINS_AWARDED);
         playFreeSpinsTriggerSound();
         toast({
             title: "Free Spins Triggered!",
@@ -232,7 +162,7 @@ export function SlotMachine() {
       } else {
           playWinSound();
       }
-      
+
       const winningSymbols = [...new Set(winningLines.map(l => l.symbol))];
       const feedback = await getWinningFeedback({
           winAmount: totalWin,
@@ -241,20 +171,17 @@ export function SlotMachine() {
       });
       setWinningFeedback(feedback);
     }
-    
-    // Auto-spin if in free spins mode and more spins remain
-    if (updatedFreeSpins > 0) {
-        setIsAutoSpinning(true);
-        setTimeout(() => {
-            setIsAutoSpinning(false);
-            spin();
-        }, 2000); // Add a delay before the next free spin
-    } else {
-        setIsAutoSpinning(false);
+  }, [isSpinning, balance, betAmount, freeSpinsRemaining, toast, playSpinSound, stopSpinSound, playReelStopSound, playWinSound, playBigWinSound, playFreeSpinsTriggerSound]);
+
+  useEffect(() => {
+    if (freeSpinsRemaining > 0 && !isSpinning) {
+      const timer = setTimeout(() => {
+        spin();
+      }, 2000);
+      return () => clearTimeout(timer);
     }
+  }, [freeSpinsRemaining, isSpinning, spin]);
 
-
-  }, [balance, betAmount, toast, playSpinSound, stopSpinSound, playReelStopSound, playWinSound, playBigWinSound, playFreeSpinsTriggerSound, freeSpinsRemaining, isSpinning, isAutoSpinning]);
 
   const getReelSymbols = (reelIndex: number) => {
     if (spinningReels[reelIndex]) {
@@ -265,29 +192,27 @@ export function SlotMachine() {
 
   const getWinningLineIndices = (reelIndex: number, rowIndex: number): number[] => {
     if (winningLines.length === 0) return [];
-    
+
     return winningLines.reduce((acc, line, lineIndex) => {
-      // For regular paylines
       if (line.paylineIndex !== -1 && line.line[reelIndex] === rowIndex && (reelIndex < line.count)) {
         acc.push(line.paylineIndex);
       }
-      // For scatter symbols
       else if (line.paylineIndex === -1) {
           const gridSymbol = grid[reelIndex][rowIndex];
           if (gridSymbol === line.symbol) {
-              acc.push(10); // Use a special index for scatter highlighting
+              acc.push(10);
           }
       }
       return acc;
     }, [] as number[]);
   }
-  
+
   return (
     <div className="flex flex-col items-center gap-2 md:gap-4 p-2 md:p-4 rounded-2xl bg-card/50 border-2 md:border-4 border-primary/50 shadow-2xl w-full max-w-6xl relative">
       <div className="absolute top-2 right-2 z-10">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={toggleMute}
           className="rounded-full w-10 h-10 p-2 bg-black/50 hover:bg-black/70 transition-colors"
           aria-label={isMuted ? "Unmute" : "Mute"}
@@ -306,10 +231,10 @@ export function SlotMachine() {
       <div className="relative w-full flex justify-center">
         <div className="grid grid-cols-6 gap-2 p-2 bg-black/30 rounded-lg">
           {Array.from({ length: NUM_REELS }).map((_, i) => (
-            <ReelColumn 
+            <ReelColumn
               key={i}
-              symbols={getReelSymbols(i)} 
-              isSpinning={spinningReels[i]} 
+              symbols={getReelSymbols(i)}
+              isSpinning={spinningReels[i]}
               reelIndex={i}
               winningLineIndicesForColumn={
                 Array(NUM_ROWS).fill(0).map((_, j) => getWinningLineIndices(i, j))
@@ -325,7 +250,7 @@ export function SlotMachine() {
         betAmount={betAmount}
         balance={balance}
         lastWin={lastWin}
-        isSpinning={isSpinning || isAutoSpinning}
+        isSpinning={isSpinning}
         onSpin={spin}
         onIncreaseBet={handleIncreaseBet}
         freeSpinsRemaining={freeSpinsRemaining}
@@ -333,12 +258,12 @@ export function SlotMachine() {
       />
 
       {winningFeedback && (
-          <WinAnimation 
-            feedback={winningFeedback} 
+          <WinAnimation
+            feedback={winningFeedback}
             onAnimationComplete={() => {
               setWinningFeedback(null)
               if (!isFreeSpinsMode) setWinningLines([]);
-            }} 
+            }}
           />
       )}
     </div>
