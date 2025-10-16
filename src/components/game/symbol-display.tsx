@@ -38,9 +38,8 @@ export const SymbolDisplay = memo(({ symbolId, className, winningLineIndices = [
         <Image 
           src={image} 
           alt={symbolId.toLowerCase()} 
-          width={64} 
-          height={64}
-          className="w-full h-full object-contain drop-shadow-lg"
+          fill
+          className="object-cover drop-shadow-lg"
           unoptimized={process.env.NODE_ENV !== 'production'} // Only optimize in production
         />
       ) : (
