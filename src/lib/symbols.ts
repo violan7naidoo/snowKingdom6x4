@@ -104,18 +104,48 @@ export const SYMBOLS: Record<SymbolId, SymbolConfig> = {
 
 // Reel strips configuration
 export const REEL_STRIPS: SymbolId[][] = [
-  // Reel 1
-  ['WILD', 'TEN', 'KING', 'QUEEN_CARD', 'JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER'],
-  // Reel 2
-  ['TEN', 'KING', 'QUEEN_CARD', 'JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER', 'WILD'],
-  // Reel 3
-  ['KING', 'QUEEN_CARD', 'JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER', 'WILD', 'TEN'],
-  // Reel 4
-  ['QUEEN_CARD', 'JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER', 'WILD', 'TEN', 'KING'],
-  // Reel 5
-  ['JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER', 'WILD', 'TEN', 'KING', 'QUEEN_CARD'],
-  // Reel 6
-  ['ACE', 'WOLF', 'STONE', 'QUEEN', 'LEOPARD', 'DRAGON', 'CROWN', 'SCATTER', 'WILD', 'TEN', 'KING', 'QUEEN_CARD', 'JACK'],
+  // Reel 1 (34 symbols)
+  [
+    'KING', 'CROWN', 'QUEEN_CARD', 'TEN', 'ACE', 'WOLF', 'STONE', 'QUEEN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'LEOPARD', 'DRAGON', 'JACK',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'STONE', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'ACE', 'WILD', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'SCATTER'
+  ],
+  // Reel 2 (34 symbols)
+  [
+    'TEN', 'STONE', 'QUEEN', 'KING', 'ACE', 'WOLF', 'STONE', 'QUEEN_CARD',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'LEOPARD', 'DRAGON', 'CROWN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'JACK', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'ACE', 'WILD', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'SCATTER'
+  ],
+  // Reel 3 (34 symbols)
+  [
+    'WILD', 'ACE', 'WOLF', 'STONE', 'ACE', 'QUEEN_CARD', 'STONE', 'QUEEN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'LEOPARD', 'DRAGON', 'CROWN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'KING', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'JACK', 'WILD', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'SCATTER'
+  ],
+  // Reel 4 (34 symbols)
+  [
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'STONE', 'QUEEN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'LEOPARD', 'DRAGON', 'CROWN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'STONE', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'ACE', 'WILD', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'SCATTER'
+  ],
+  // Reel 5 (34 symbols)
+  [
+    'DRAGON', 'WILD', 'LEOPARD', 'JACK', 'ACE', 'WOLF', 'STONE', 'QUEEN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'QUEEN_CARD', 'TEN', 'CROWN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'STONE', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'ACE', 'KING', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'SCATTER'
+  ],
+  // Reel 6 (34 symbols)
+  [
+    'JACK', 'SCATTER', 'KING', 'QUEEN_CARD', 'ACE', 'WOLF', 'STONE', 'QUEEN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'LEOPARD', 'DRAGON', 'CROWN',
+    'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'ACE', 'WOLF', 'STONE', 'TEN', 'JACK',
+    'QUEEN_CARD', 'KING', 'ACE', 'WILD', 'TEN', 'JACK', 'QUEEN_CARD', 'KING', 'TEN'
+  ],
 ];
 
 export const SCATTER_SYMBOL: SymbolId = 'SCATTER';
