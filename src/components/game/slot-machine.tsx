@@ -300,7 +300,7 @@ export function SlotMachine() {
         </Button>
       </div>
       <h1 className="text-3xl sm:text-4xl md:text-6xl font-headline text-accent tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-        Reel Runner
+        Snow Kingdom
       </h1>
 
       <div className="relative w-full flex justify-center">

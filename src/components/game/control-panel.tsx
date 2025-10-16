@@ -64,7 +64,7 @@ export function ControlPanel({
                  <Button
                     onClick={onSpin}
                     disabled={isSpinning || (balance < betAmount && !isFreeSpinsMode)}
-                    className="w-full h-12 md:h-24 text-xl sm:text-2xl md:text-3xl font-headline rounded-lg bg-primary hover:bg-primary/80 text-primary-foreground shadow-xl border-2 border-red-400/50 transition-all duration-300 transform active:scale-95 disabled:bg-muted disabled:cursor-not-allowed"
+                    className="w-full h-12 md:h-24 text-xl sm:text-2xl md:text-3xl font-headline rounded-lg bg-primary hover:bg-primary/80 text-primary-foreground shadow-xl border-2 border-primary/50 transition-all duration-300 transform active:scale-95 disabled:bg-muted disabled:cursor-not-allowed"
                 >
                     {isSpinning ? "Spinning..." : (isFreeSpinsMode && freeSpinsRemaining > 0 ? "FREE SPIN" : "SPIN")}
                 </Button>
