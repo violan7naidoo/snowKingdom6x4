@@ -37,67 +37,67 @@ export const SYMBOLS: Record<SymbolId, SymbolConfig> = {
   CROWN: { 
     id: 'CROWN', 
     name: 'Crown', 
-    payout: { 3: 1.5, 4: 15, 5: 75, 6: 300 },
+    payout: { 3: 10, 4: 60, 5: 100, 6: 150 },
     image: '/images/symbols/Crown.png' 
   },
   DRAGON: { 
     id: 'DRAGON', 
     name: 'Dragon', 
-    payout: { 3: 1.2, 4: 12, 5: 60, 6: 250 },
+    payout: { 3: 10, 4: 30, 5: 85, 6: 120 },
     image: '/images/symbols/Dragon.png' 
   },
   LEOPARD: { 
     id: 'LEOPARD', 
     name: 'Leopard', 
-    payout: { 3: 1, 4: 10, 5: 50, 6: 200 },
+    payout: { 3: 5, 4: 30, 5: 85, 6: 120 },
     image: '/images/symbols/Leopard.png' 
   },
   QUEEN: { 
     id: 'QUEEN', 
     name: 'Queen', 
-    payout: { 3: 0.8, 4: 8, 5: 40, 6: 150 },
+    payout: { 3: 5, 4: 20, 5: 60, 6: 100 },
     image: '/images/symbols/Queen.png' 
   },
   STONE: { 
     id: 'STONE', 
     name: 'Stone', 
-    payout: { 3: 0.6, 4: 6, 5: 30, 6: 120 },
+    payout: { 3: 5, 4: 20, 5: 60, 6: 100 },
     image: '/images/symbols/Stone.png' 
   },
   WOLF: { 
     id: 'WOLF', 
     name: 'Wolf', 
-    payout: { 3: 0.5, 4: 5, 5: 25, 6: 100 },
+    payout: { 3: 5, 4: 20, 5: 60, 6: 100 },
     image: '/images/symbols/Wolf.png' 
   },
   ACE: { 
     id: 'ACE', 
     name: 'Ace', 
-    payout: { 3: 0.4, 4: 4, 5: 20, 6: 80 },
+    payout: { 3: 2, 4: 5, 5: 20, 6: 40 },
     image: '/images/symbols/A.png' 
   },
   JACK: { 
     id: 'JACK', 
     name: 'Jack', 
-    payout: { 3: 0.3, 4: 3, 5: 15, 6: 60 },
+    payout: { 3: 2, 4: 5, 5: 20, 6: 40 },
     image: '/images/symbols/J.png' 
   },
   QUEEN_CARD: { 
     id: 'QUEEN_CARD', 
     name: 'Queen Card', 
-    payout: { 3: 0.2, 4: 2, 5: 10, 6: 40 },
+    payout: { 3: 2, 4: 5, 5: 20, 6: 40 },
     image: '/images/symbols/Q.png' 
   },
   KING: { 
     id: 'KING', 
     name: 'King', 
-    payout: { 3: 0.1, 4: 1, 5: 5, 6: 20 },
+    payout: { 3: 2, 4: 5, 5: 20, 6: 40},
     image: '/images/symbols/K.png' 
   },
   TEN: { 
     id: 'TEN', 
     name: 'Ten', 
-    payout: { 3: 0.05, 4: 0.5, 5: 2.5, 6: 10 },
+    payout: { 3: 2, 4: 5, 5: 20, 6: 40 },
     image: '/images/symbols/10.png' 
   },
 };
