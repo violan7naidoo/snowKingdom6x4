@@ -28,7 +28,7 @@ export function ReelColumn({ symbols, isSpinning, reelIndex, winningLineIndicesF
     // By duplicating the reel strip, we create a seamless loop for the animation.
     const displaySymbols = isSpinning ? [...reelStrip, ...reelStrip, ...reelStrip.slice(0, NUM_ROWS)] : symbols;
     
-    const containerHeightClass = 'h-[204px] sm:h-[352px] md:h-[592px]';
+    const containerHeightClass = 'h-[220px] sm:h-[352px] md:h-[592px]';
 
     return (
         <div className={cn("overflow-hidden", containerHeightClass)}>
