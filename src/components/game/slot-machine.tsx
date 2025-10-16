@@ -37,7 +37,7 @@ const generateInitialGrid = (): SymbolId[][] =>
 export function SlotMachine() {
   const [grid, setGrid] = useState<SymbolId[][]>(generateInitialGrid);
   const [spinningReels, setSpinningReels] = useState<boolean[]>(Array(NUM_REELS).fill(false));
-  const [balance, setBalance] = useState(100);
+  const [balance, setBalance] = useState(2173);
   const [betAmount, setBetAmount] = useState(BET_AMOUNTS[0]);
   const [lastWin, setLastWin] = useState(0);
   const [winningLines, setWinningLines] = useState<WinningLine[]>([]);
